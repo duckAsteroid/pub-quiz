@@ -118,5 +118,16 @@ public class QuizControllerTest {
         System.out.println(json);
         Question q = mapper.readValue(json, Question.class);
         assertNotNull(q);
+
+        mvcResult = mockMvc.perform(
+                get("/sessions/"+session.getShortId()+"/rounds/0/questions/0")
+                    .param("showAnswer", "true"))
+                .andExpect(status().isOk())
+                //.andExpect(content().json())
+                .andReturn();
+        json = mvcResult.getResponse().getContentAsString();
+        System.out.println(json);
+        q = mapper.readValue(json, Question.class);
+        assertNotNull(q);
     }
 }

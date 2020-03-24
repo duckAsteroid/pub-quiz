@@ -32,8 +32,13 @@ public class QuizController {
     @RequestMapping(value = "/start", method = RequestMethod.POST)
     public QuizSession startQuiz(@RequestBody Quiz quiz, @RequestParam("host") String host) {
         Quiz savedQuiz = quizRepository.save(quiz);
+        String shortName;
+        do {
+            shortName = QuizName.newName();
+        } while(sessionRepository.countAllByShortId(shortName) > 0);
+
         QuizSession session = QuizSession.builder().host(host)
-                .shortId(QuizName.newName())
+                .shortId(shortName)
                 .quizId(savedQuiz.getId().toHexString())
                 .build();
         QuizSession savedSession = sessionRepository.save(session);
@@ -44,6 +49,12 @@ public class QuizController {
     public QuizSession getSession(@PathVariable("session") String sessionId) {
         Optional<QuizSession> session = sessionRepository.findByShortId(sessionId);
         return session.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No session for ID "+session));
+    }
+
+    @RequestMapping(value = "/sessions/{session}", method = RequestMethod.DELETE)
+    public void deleteSession(@PathVariable("session") String sessionId) {
+        sessionRepository.deleteAllByShortId(sessionId);
+        submissionRepository.deleteAllByQuizSession(sessionId);
     }
 
     @RequestMapping(value = "/sessions/{session}/teams")

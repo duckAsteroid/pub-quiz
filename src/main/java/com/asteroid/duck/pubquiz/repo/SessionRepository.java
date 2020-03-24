@@ -8,4 +8,6 @@ import java.util.Optional;
 
 public interface SessionRepository extends MongoRepository<QuizSession, ObjectId> {
     Optional<QuizSession> findByShortId(String shortId);
+    int countAllByShortId(String shortId);
+    void deleteAllByShortId(String shortId);
 }
