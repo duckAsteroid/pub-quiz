@@ -11,5 +11,5 @@ public interface SubmissionRepository extends MongoRepository<Submission, Object
     Optional<Submission> findByQuizSessionAndTeam(String quizSession, Team team);
 
     void deleteAllByQuizSession(String quizSession);
-    void deleteAllByQuizSessionaAndTeam(String quizSession, Team team);
+    void deleteAllByQuizSessionAndTeam(String quizSession, Team team);
 }
