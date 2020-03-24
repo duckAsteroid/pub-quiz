@@ -1,0 +1,5 @@
+spring:
+  data:
+    mongodb:
+      database: pubquiz
+      uri: ${CUSTOMCONNSTR_MONGODB_CONN}
