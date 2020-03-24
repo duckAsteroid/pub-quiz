@@ -4,6 +4,7 @@ import com.asteroid.duck.pubquiz.QuizName;
 import com.asteroid.duck.pubquiz.model.QuizJsonTest;
 import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.asteroid.duck.pubquiz.model.Team;
+import com.asteroid.duck.pubquiz.model.ask.Question;
 import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
@@ -105,6 +106,17 @@ public class QuizControllerTest {
     }
 
     @Test
-    void getQuestion() {
+    void getQuestion() throws Exception {
+        QuizSession session = createSession();
+        ObjectMapper mapper = new ObjectMapper();
+        MvcResult mvcResult = mockMvc.perform(
+                get("/sessions/"+session.getShortId()+"/rounds/0/questions/0"))
+                .andExpect(status().isOk())
+                //.andExpect(content().json())
+                .andReturn();
+        String json = mvcResult.getResponse().getContentAsString();
+        System.out.println(json);
+        Question q = mapper.readValue(json, Question.class);
+        assertNotNull(q);
     }
 }

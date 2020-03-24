@@ -1,5 +1,8 @@
 package com.asteroid.duck.pubquiz.model.ask;
 
+import com.asteroid.duck.pubquiz.model.QuizSession;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
 
@@ -8,6 +11,7 @@ import java.util.List;
 
 @Data
 @Builder
+@JsonDeserialize(builder = Question.QuestionBuilder.class)
 public class Question {
     /** The question as put/read to the audience */
     private String question;
@@ -19,4 +23,7 @@ public class Question {
     private List<CandidateAnswer> candidateAnswers;
     /** The correct answer (descriptive - or by reference to the correct candidate code) */
     private String correctAnswer;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class QuestionBuilder {}
 }

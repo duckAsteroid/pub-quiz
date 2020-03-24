@@ -12,12 +12,11 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
-/**
- * An active quiz session (in memory only)
- */
 @Data
 @Builder
 @JsonDeserialize(builder = QuizSession.QuizSessionBuilder.class)
@@ -37,7 +36,7 @@ public class QuizSession {
     private String quizId;
 
     @Builder.Default
-    private Set<Team> teams = new HashSet<>();
+    private List<Team> teams = new ArrayList<>();
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class QuizSessionBuilder {}
