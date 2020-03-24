@@ -1,0 +1,53 @@
+{
+  "id" : null,
+  "quizName" : "Test Quiz",
+  "rounds" : [ {
+    "title" : "General Knowledge",
+    "questions" : [ {
+      "question" : "How many Ps in Mississippi?",
+      "imageReference" : null,
+      "type" : "TEXT",
+      "candidateAnswers" : null,
+      "correctAnswer" : "2"
+    }, {
+      "question" : "How many Ss in Mississippi?",
+      "imageReference" : null,
+      "type" : "MULTIPLE_CHOICE",
+      "candidateAnswers" : [ {
+        "code" : "A",
+        "answer" : "One"
+      }, {
+        "code" : "B",
+        "answer" : "Two"
+      }, {
+        "code" : "C",
+        "answer" : "Three"
+      }, {
+        "code" : "D",
+        "answer" : "Four"
+      } ],
+      "correctAnswer" : "D"
+    } ]
+  }, {
+    "title" : "Geography",
+    "questions" : [ {
+      "question" : "In which county is Altrincham?",
+      "imageReference" : null,
+      "type" : "MULTIPLE_CHOICE",
+      "candidateAnswers" : [ {
+        "code" : "A",
+        "answer" : "Lancashire"
+      }, {
+        "code" : "B",
+        "answer" : "Cheshire"
+      }, {
+        "code" : "C",
+        "answer" : "Yorkshire"
+      }, {
+        "code" : "D",
+        "answer" : "Derbyshire"
+      } ],
+      "correctAnswer" : "Cheshire"
+    } ]
+  } ]
+}

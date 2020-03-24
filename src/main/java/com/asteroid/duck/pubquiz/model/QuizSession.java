@@ -31,9 +31,12 @@ public class QuizSession {
     private String shortId;
 
     private String host;
+    private String hostKey;
 
     /** The ID of the {@link com.asteroid.duck.pubquiz.model.ask.Quiz} */
     private String quizId;
+    /** A pointer to the current question */
+    private QuestionId currentQuestion;
 
     @Builder.Default
     private List<Team> teams = new ArrayList<>();

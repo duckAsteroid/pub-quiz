@@ -15,18 +15,19 @@ import com.asteroid.duck.pubquiz.rest.events.SubmissionEvent;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.messaging.handler.annotation.MessageMapping;
-import org.springframework.messaging.handler.annotation.SendTo;
+import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.web.util.HtmlUtils;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.Random;
 
 @RestController
 public class QuizController {
+
+    private Random random = new Random();
     @Autowired
     private QuizRepository quizRepository;
     @Autowired
@@ -43,8 +44,8 @@ public class QuizController {
      * @param host the name of the host
      * @return a session (with a short ID) that teams can join
      */
-    @RequestMapping(value = "/start", method = RequestMethod.POST)
-    public QuizSession startQuiz(@RequestBody Quiz quiz, @RequestParam("host") String host) {
+    @RequestMapping(value = "/start", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
+    public QuizSession startQuiz( @RequestHeader("host") String host, Quiz quiz) {
         Quiz savedQuiz = quizRepository.save(quiz);
         String shortName;
         do {
@@ -54,6 +55,7 @@ public class QuizController {
         QuizSession session = QuizSession.builder().host(host)
                 .shortId(shortName)
                 .quizId(savedQuiz.getId().toHexString())
+                .hostKey(Long.toHexString(random.nextLong()))
                 .build();
         QuizSession savedSession = sessionRepository.save(session);
         webSocket.convertAndSend(Channel.SESSIONS, savedSession.getShortId());
@@ -65,8 +67,7 @@ public class QuizController {
      * @param sessionId the short ID of the session
      * @return the session (and it's current teams)
      */
-    @RequestMapping("/sessions/{session}")
-    public QuizSession getSession(@PathVariable("session") String sessionId) {
+    public QuizSession getSession(String sessionId) {
         Optional<QuizSession> session = sessionRepository.findByShortId(sessionId);
         return session.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No session for ID "+session));
     }
@@ -76,15 +77,19 @@ public class QuizController {
      * @param sessionId short ID of session
      */
     @RequestMapping(value = "/sessions/{session}", method = RequestMethod.DELETE)
-    public void deleteSession(@PathVariable("session") String sessionId) {
-        sessionRepository.deleteAllByShortId(sessionId);
-        submissionRepository.deleteAllByQuizSession(sessionId);
+    public void deleteSession(@PathVariable("session") String sessionId, @RequestParam("key") String hostKey) {
+        QuizSession session = getSession(sessionId);
+        if (session.getHostKey().equals(hostKey)) {
+            sessionRepository.deleteAllByShortId(sessionId);
+            submissionRepository.deleteAllByQuizSession(sessionId);
+        }
+        else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid host key");
     }
     //endregion
 
     //region Team actions
     /**
-     *
+     * Get this list of teams in this session
      * @param sessionId
      * @return
      */
@@ -94,12 +99,24 @@ public class QuizController {
         return session.getTeams();
     }
 
+    /**
+     * Get a specific team
+     * @param sessionId
+     * @param teamId
+     * @return
+     */
     @RequestMapping(value = "/sessions/{session}/teams/{teamId}")
     public Team getTeam(@PathVariable("session") String sessionId, @PathVariable("teamId") Integer teamId) {
         QuizSession session = getSession(sessionId);
         return session.getTeams().get(teamId);
     }
 
+    /**
+     * Create a new team in a session
+     * @param sessionId
+     * @param name
+     * @return
+     */
     @RequestMapping(value = "/sessions/{session}/teams/new", method = RequestMethod.POST)
     public Team newTeam(@PathVariable("session") String sessionId, @RequestParam("name") String name) {
         Team team = Team.builder().name(name).build();
@@ -113,6 +130,14 @@ public class QuizController {
     }
     //endregion
 
+    /**
+     * Get a question
+     * @param sessionId
+     * @param roundId
+     * @param questionId
+     * @param showAnswer
+     * @return
+     */
     @RequestMapping("/sessions/{session}/rounds/{roundId}/questions/{questionId}")
     public Question getQuestion(@PathVariable("session") String sessionId, @PathVariable("roundId") Integer roundId, @PathVariable("questionId") Integer questionId, @RequestParam(value = "showAnswer") Optional<Boolean> showAnswer) {
         QuizSession session = getSession(sessionId);
@@ -127,7 +152,62 @@ public class QuizController {
         return question;
     }
 
+    /**
+     * Get the current question in the session
+     * @param sessionId
+     * @param showAnswer
+     * @return
+     */
+    @RequestMapping("/sessions/{session}/questions/current")
+    public Question currentQuestion(@PathVariable("session") String sessionId, @RequestParam(value = "showAnswer") Optional<Boolean> showAnswer) {
+        QuizSession session = getSession(sessionId);
+        Optional<Quiz> found = quizRepository.findById(new ObjectId(session.getQuizId()));
+        Quiz quiz = found.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No quiz for ID " + session.getQuizId()));
+        Question question = quiz.getById(session.getCurrentQuestion());
+        // suppress answer
+        if (!showAnswer.orElse(false)) {
+            question.setCorrectAnswer("CHEAT!");
+        }
+        return question;
+    }
 
+    /**
+     * Advance to the next question
+     * @param sessionId the session short ID
+     * @param showAnswer show the answer in the response or mask it
+     * @param key the host secure key
+     * @return
+     */
+    @RequestMapping("/sessions/{session}/questions/next")
+    public Question nextQuestion(@PathVariable("session") String sessionId, @RequestParam(value = "showAnswer") Optional<Boolean> showAnswer, @RequestParam("key") String key) {
+        QuizSession session = getSession(sessionId);
+        if (!session.getHostKey().equals(key)) throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid host key");
+        Optional<Quiz> found = quizRepository.findById(new ObjectId(session.getQuizId()));
+        Quiz quiz = found.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No quiz for ID " + session.getQuizId()));
+        QuestionId.QuizIterator iterator = new QuestionId.QuizIterator(quiz, session.getCurrentQuestion());
+        if (iterator.hasNext()) {
+            QuestionId nextQuestion = iterator.next();
+            session.setCurrentQuestion(nextQuestion);
+            sessionRepository.save(session);
+            webSocket.convertAndSend(Channel.SESSIONS + "/" + sessionId, nextQuestion.toString());
+            return quiz.getById(nextQuestion);
+        } else {
+            session.setCurrentQuestion(null);
+            sessionRepository.save(session);
+            webSocket.convertAndSend(Channel.SESSIONS + "/" + sessionId, "GAME OVER");
+            // FIXME Log error - no next question
+            throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
+        }
+    }
+
+    /**
+     * Submit an answer
+     * @param sessionId
+     * @param roundId
+     * @param questionId
+     * @param teamId
+     * @param answerContent
+     */
     @RequestMapping(value = "/sessions/{session}/rounds/{roundId}/questions/{questionId}", method = RequestMethod.POST)
     public void submitAnswer(@PathVariable("session") String sessionId, @PathVariable("roundId") Integer roundId, @PathVariable("questionId") Integer questionId,
                              @RequestParam("teamId") Integer teamId, @RequestBody String answerContent) {
@@ -139,14 +219,6 @@ public class QuizController {
         submission.getAnswers().put(id, answer);
         submissionRepository.save(submission);
         webSocket.convertAndSend(Channel.SUBMISSION, SubmissionEvent.builder().questionId(id).team(team).build());
-    }
-
-
-    @MessageMapping("/hello")
-    @SendTo("/topic/greetings")
-    public Greeting greeting(HelloMessage message) throws Exception {
-        Thread.sleep(1000); // simulated delay
-        return new Greeting("Hello, " + HtmlUtils.htmlEscape(message.getName()) + "!");
     }
 
 }
