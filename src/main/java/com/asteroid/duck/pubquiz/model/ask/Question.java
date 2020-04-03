@@ -23,6 +23,8 @@ public class Question {
     private List<CandidateAnswer> candidateAnswers;
     /** The correct answer (descriptive - or by reference to the correct candidate code) */
     private String correctAnswer;
+    /** What is the question worth (maximum) */
+    private int maxPoints;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class QuestionBuilder {}
