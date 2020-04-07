@@ -1,5 +1,7 @@
 package com.asteroid.duck.pubquiz.model.ask;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
 
@@ -14,9 +16,13 @@ import java.util.stream.IntStream;
  */
 @Data
 @Builder
+@JsonDeserialize(builder = CandidateAnswer.CandidateAnswerBuilder.class)
 public class CandidateAnswer {
     private char code;
     private String answer;
+
+    @JsonPOJOBuilder(withPrefix = "")
+    public static class CandidateAnswerBuilder {}
 
     public static final char[] ALPHA = IntStream.rangeClosed('A', 'Z')
             .mapToObj(c -> "" + (char) c)

@@ -13,6 +13,8 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
+
 public class QuizJsonTest {
 
     public static final Quiz example() {
@@ -60,7 +62,11 @@ public class QuizJsonTest {
         ObjectMapper objectMapper = new ObjectMapper();
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
-        System.out.println(objectWriter.writeValueAsString(example()));
-        System.out.println(objectWriter.writeValueAsString(exampleSubmission()));
+        Quiz example = example();
+        String jsonout = objectWriter.writeValueAsString(example);
+
+        Quiz readBack = objectMapper.readValue(jsonout, Quiz.class);
+        assertEquals(example, readBack);
+
     }
 }

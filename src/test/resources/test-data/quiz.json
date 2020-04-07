@@ -8,7 +8,8 @@
       "imageReference" : null,
       "type" : "TEXT",
       "candidateAnswers" : null,
-      "correctAnswer" : "2"
+      "correctAnswer" : "2",
+      "maxPoints" : 0
     }, {
       "question" : "How many Ss in Mississippi?",
       "imageReference" : null,
@@ -26,7 +27,8 @@
         "code" : "D",
         "answer" : "Four"
       } ],
-      "correctAnswer" : "D"
+      "correctAnswer" : "D",
+      "maxPoints" : 0
     } ]
   }, {
     "title" : "Geography",
@@ -47,7 +49,8 @@
         "code" : "D",
         "answer" : "Derbyshire"
       } ],
-      "correctAnswer" : "Cheshire"
+      "correctAnswer" : "Cheshire",
+      "maxPoints" : 0
     } ]
   } ]
 }
