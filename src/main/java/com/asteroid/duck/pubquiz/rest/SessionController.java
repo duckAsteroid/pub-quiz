@@ -11,17 +11,14 @@ import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
 import com.asteroid.duck.pubquiz.repo.SubmissionRepository;
-import com.asteroid.duck.pubquiz.rest.Channel;
 import com.asteroid.duck.pubquiz.rest.events.SubmissionEvent;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 

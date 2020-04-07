@@ -1,31 +1,18 @@
 package com.asteroid.duck.pubquiz.rest;
 
-import com.asteroid.duck.pubquiz.QuizName;
-import com.asteroid.duck.pubquiz.model.QuestionId;
-import com.asteroid.duck.pubquiz.model.QuizSession;
-import com.asteroid.duck.pubquiz.model.Team;
-import com.asteroid.duck.pubquiz.model.answer.Submission;
-import com.asteroid.duck.pubquiz.model.answer.SubmittedAnswer;
-import com.asteroid.duck.pubquiz.model.ask.Question;
 import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
-import com.asteroid.duck.pubquiz.repo.SessionRepository;
-import com.asteroid.duck.pubquiz.repo.SubmissionRepository;
-import com.asteroid.duck.pubquiz.rest.events.SubmissionEvent;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
-import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
-import java.util.Optional;
-import java.util.Random;
 import java.util.stream.Collectors;
 
 @RestController
