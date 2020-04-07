@@ -1,4 +1,4 @@
-package com.asteroid.duck.pubquiz.rest;
+package com.asteroid.duck.pubquiz.rest.socket;
 
 public class Greeting {
     private String content;

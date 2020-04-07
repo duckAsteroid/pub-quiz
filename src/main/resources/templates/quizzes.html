@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>The Corona Arms : Pub Quiz</title>
+    <script language="JavaScript">
+
+    </script>
+</head>
+<body>
+    <div layout:fragment="content" id="page_content">
+        <div id="quizlist" th:unless="${#lists.isEmpty(quizzes)}">
+            <table class="table table-hover">
+                <caption>A list of the quizzes available to play</caption>
+                <thead class=".thead-dark">
+                <tr>
+                    <th>ID</th>
+                    <th>Name</th>
+                    <th>Rounds</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="quiz : ${quizzes}">
+                    <td th:text="${{quiz.getId().toHexString()}}">HEX-ID</td>
+                    <td th:text="${{quiz.getQuizName()}}">Name</td>
+                    <td th:text="${{quiz.getRounds().size()}}">Rounds</td>
+                    <td><a>Play</a></td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+        <div th:if="${#lists.isEmpty(quizzes)}">No quizzes found!?</div>
+        <div id="uploader">
+            <form action="#" th:action="@{/rest/quiz/new}" method="post">
+                <input type="file" id="file">
+                <button type="submit">Upload</button>
+            </form>
+        </div>
+    </div>
+</body>
+</html>
