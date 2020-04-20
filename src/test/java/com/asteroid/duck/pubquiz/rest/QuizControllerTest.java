@@ -1,6 +1,6 @@
 package com.asteroid.duck.pubquiz.rest;
 
-import com.asteroid.duck.pubquiz.QuizName;
+import com.asteroid.duck.pubquiz.util.QuizName;
 import com.asteroid.duck.pubquiz.model.QuizJsonTest;
 import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.asteroid.duck.pubquiz.model.Team;
@@ -9,21 +9,15 @@ import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.bson.types.ObjectId;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.data.mongo.AutoConfigureDataMongo;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
-import org.springframework.core.env.Profiles;
 import org.springframework.http.MediaType;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
-import org.springframework.test.web.servlet.ResultActions;
-
-import java.nio.charset.StandardCharsets;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static java.util.GregorianCalendar.getInstance;
@@ -31,7 +25,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @AutoConfigureDataMongo

@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>The Corona Arms : Pub Quiz</title>
+</head>
+<body>
+<div layout:fragment="content" id="page_content">
+    <h1 th:text="${message}">Error message</h1>
+    <table>
+        <tr>
+            <td>Date</td>
+            <td th:text="${timestamp}"/>
+        </tr>
+        <tr>
+            <td>Path</td>
+            <td th:text="${path}"/>
+        </tr>
+        <tr>
+            <td>Error</td>
+            <td th:text="${error}"/>
+        </tr>
+        <tr>
+            <td>Status</td>
+            <td th:text="${status}"/>
+        </tr>
+        <tr>
+            <td>Exception</td>
+            <td th:text="${exception}"/>
+        </tr>
+        <tr>
+            <td>Trace</td>
+            <td>
+                <pre th:text="${trace}"/>
+            </td>
+        </tr>
+    </table>
+</div>
+</body>
+</html>

@@ -37,7 +37,14 @@ public class QuizJsonTest {
                 .question("In which county is Altrincham?")
                 .correctAnswer("Cheshire")
                 .build();
-        Round r2 = Round.builder().title("Geography").questions(Collections.singletonList(r2q1)).build();
+
+        Question r2q2 = Question.builder()
+                .type(QuestionType.MULTIPLE_CHOICE)
+                .candidateAnswers(CandidateAnswer.alphaChoices("Russia", "Ukraine", "Turkey", "Georgia"))
+                .question("In which country is the Chrimean Penninsula?")
+                .correctAnswers(Arrays.asList(AcceptedAnswer.builder().answer("Russia").build(), AcceptedAnswer.builder().answer("Ukraine").build()))
+                .build();
+        Round r2 = Round.builder().title("Geography").questions(Arrays.asList(r2q1, r2q2)).build();
 
         Quiz example = Quiz.builder()
                 .quizName("Test Quiz")
@@ -64,6 +71,8 @@ public class QuizJsonTest {
 
         Quiz example = example();
         String jsonout = objectWriter.writeValueAsString(example);
+        System.out.println(jsonout);
+
 
         Quiz readBack = objectMapper.readValue(jsonout, Quiz.class);
         assertEquals(example, readBack);

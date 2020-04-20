@@ -20,13 +20,19 @@
                     <div class="input-group-prepend">
                         <span class="input-group-text">Quiz ID:</span>
                     </div>
-                    <input type="text" class="form-control" aria-label="Enter the quiz name">
+                    <input type="text" class="form-control" id="quizIdText" aria-label="Enter the quiz name">
                     <div class="input-group-append">
-                        <button class="btn btn-outline-secondary" type="button" id="button-addon2">Enter</button>
+                        <a class="btn btn-outline-secondary" role="button" id="quizLink" href="">Enter</a>
                     </div>
                 </div>
+                <script language="JavaScript">
+                    $("#quizIdText").keyup(function(){
+                        $('#quizLink').attr("href", `/ui/quiz/${$(this).val()}/play.html`);
+                    });
+                </script>
             </div>
         </div>
     </div>
+
 </body>
 </html>

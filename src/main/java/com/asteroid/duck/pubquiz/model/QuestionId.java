@@ -31,6 +31,23 @@ public class QuestionId {
     }
 
     /**
+     * Is this question after the other.
+     *
+     * i.e. is this a later (greater) round or a later question in the same round
+     *
+     * @param other
+     * @return
+     */
+    public boolean isAfter(QuestionId other) {
+        if (other != null) {
+            if (this.round >= other.round) {
+                return this.question >= other.question;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Iterator over a quiz returning pairs of ID and questions
      */
     public static class QuizIterator implements Iterator<QuestionId> {

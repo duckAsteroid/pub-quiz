@@ -1,4 +1,4 @@
-package com.asteroid.duck.pubquiz;
+package com.asteroid.duck.pubquiz.util;
 
 import lombok.Data;
 

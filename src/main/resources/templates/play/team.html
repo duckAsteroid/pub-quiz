@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>The Corona Arms : Pub Quiz</title>
+</head>
+<body>
+<div layout:fragment="content" id="page_content">
+    <h1>Register your team</h1>
+    <form th:action="@{/newteam}" th:object="${greeting}" method="post">
+        <div class="form-group">
+            <label for="teamNameInput">Team name</label>
+            <input id="teamNameInput" class="form-control" type="text" aria-describedby="teamNameHelp" placeholder="A witty or amusing team name...">
+            <small id="teamNameHelp" class="form-text text-muted">The name of the team using this computer</small>
+        </div>
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </form>
+    <ul class="list-group" th:each="team : ${teams}">
+        <li class="list-group-item" th:text="${team.name}">Team name</li>
+    </ul>
+</div>
+</body>
+</html>

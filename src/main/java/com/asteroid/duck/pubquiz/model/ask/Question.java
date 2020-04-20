@@ -1,14 +1,17 @@
 package com.asteroid.duck.pubquiz.model.ask;
 
-import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
 import lombok.Builder;
 import lombok.Data;
 
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A single question in the quiz, and the quiz setters answer.
+ */
 @Data
 @Builder
 @JsonDeserialize(builder = Question.QuestionBuilder.class)
@@ -21,11 +24,17 @@ public class Question {
     private QuestionType type;
     /** Candidate answers (if multiple choice) */
     private List<CandidateAnswer> candidateAnswers;
-    /** The correct answer (descriptive - or by reference to the correct candidate code) */
-    private String correctAnswer;
+    /** The acceptable answers */
+    private List<AcceptedAnswer> correctAnswers;
     /** What is the question worth (maximum) */
     private int maxPoints;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static class QuestionBuilder {}
+    public static class QuestionBuilder {
+        private List<AcceptedAnswer> correctAnswers = new ArrayList<>();
+        public QuestionBuilder correctAnswer(String answer) {
+            correctAnswers.add(AcceptedAnswer.builder().answer(answer).points(maxPoints).build());
+            return this;
+        }
+    }
 }

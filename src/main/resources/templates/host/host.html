@@ -1,0 +1,23 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Host Quiz </title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
+    <script src="/app.js"></script>
+    <script src="/upload.js"></script>
+</head>
+<body>
+<div layout:fragment="content" id="page_content">
+    <h1>Welcome @Dave Hosting quiz</h1>
+    <p>Give people the short name to copy to clipboard and share...</p>
+    <p>Show the teams currently participating</p>
+    <p>Show the current question (no answer) - so you can read it out.</p>
+    <p>Provide UI to advance to next question...</p>
+    <p>Send event to all when question changes and load new question</p>
+</div>
+</body>
+</html>

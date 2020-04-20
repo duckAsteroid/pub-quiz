@@ -14,6 +14,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 import java.util.List;
 import java.util.NoSuchElementException;
 
+/**
+ * Represents a set of questions and answers the actual quiz data if you like
+ */
 @Data
 @Builder
 @JsonDeserialize(builder = Quiz.QuizBuilder.class)

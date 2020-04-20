@@ -1,6 +1,6 @@
 package com.asteroid.duck.pubquiz.rest;
 
-import com.asteroid.duck.pubquiz.QuizName;
+import com.asteroid.duck.pubquiz.util.QuizName;
 import com.asteroid.duck.pubquiz.model.QuestionId;
 import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.asteroid.duck.pubquiz.model.Team;
@@ -104,9 +104,13 @@ public class SessionController {
         Quiz quiz = found.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No quiz for ID " + session.getQuizId()));
         QuestionId id = QuestionId.builder().round(roundId).question(questionId).build();
         Question question = quiz.getById(id);
+        // if question is after the current question - bounce
+        if (!id.isAfter(session.getCurrentQuestion())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "We have not reached this question yet!");
+        }
         // suppress answer
         if (!showAnswer.orElse(false)) {
-            question.setCorrectAnswer("CHEAT!");
+            question.setCorrectAnswers(null);
         }
         return question;
     }
@@ -125,7 +129,7 @@ public class SessionController {
         Question question = quiz.getById(session.getCurrentQuestion());
         // suppress answer
         if (!showAnswer.orElse(false)) {
-            question.setCorrectAnswer("CHEAT!");
+            question.setCorrectAnswers(null);
         }
         return question;
     }

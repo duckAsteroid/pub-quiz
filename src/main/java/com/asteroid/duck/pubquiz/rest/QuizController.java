@@ -26,20 +26,13 @@ public class QuizController {
 
     /**
      * Creates new quiz in the database
-     * @param formParams the URL form params
-     * @return a session (with a short ID) that teams can join
+     * @param quiz the quiz object from JSON
+     * @return the quiz ID
      */
-    @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = MediaType.APPLICATION_FORM_URLENCODED_VALUE)
-    public String create(@RequestBody MultiValueMap<String, String> formParams) {
-        System.out.println("form params received " + formParams);
-        String file = formParams.getFirst("file");
-        Quiz quiz = null;
-        try {
-            quiz = objectMapper.readValue(file, Quiz.class);
-            return quizRepository.save(quiz).getId().toHexString();
-        } catch (JsonProcessingException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Malformed JSON", e);
-        }
+    @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    public String create(@RequestBody Quiz quiz) {
+        // FIXME don't save over existing ID
+        return quizRepository.save(quiz).getId().toHexString();
     }
 
     @RequestMapping(value="/list", method = RequestMethod.GET)

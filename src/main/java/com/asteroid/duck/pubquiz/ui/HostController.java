@@ -1,0 +1,99 @@
+package com.asteroid.duck.pubquiz.ui;
+
+import com.asteroid.duck.pubquiz.model.QuizSession;
+import com.asteroid.duck.pubquiz.model.ask.Quiz;
+import com.asteroid.duck.pubquiz.repo.QuizRepository;
+import com.asteroid.duck.pubquiz.repo.SessionRepository;
+import com.asteroid.duck.pubquiz.util.QuizName;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.bson.types.ObjectId;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.ui.ModelMap;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
+import org.springframework.web.servlet.view.RedirectView;
+
+import java.io.IOException;
+import java.util.Optional;
+import java.util.Random;
+
+/**
+ * Controller for host activities
+ */
+@Controller
+@RequestMapping("/ui/host")
+public class HostController {
+    /** Random number generator - for host keys */
+    private Random random = new Random();
+
+    @Autowired
+    private QuizRepository quizRepository;
+
+    @Autowired
+    private SessionRepository sessionRepository;
+
+    @GetMapping("/quizzes.html")
+    public String listQuizzes(Model model) {
+        model.addAttribute("quizzes", quizRepository.findAll());
+        return "host/quizzes";
+    }
+
+    @PostMapping("/upload.html")
+    public String upload(@RequestParam("file") MultipartFile file, Model model) throws IOException {
+        final String lcFileName = file.getResource().getFilename().toLowerCase();
+        if(lcFileName.endsWith(".xlsx")) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Excel parsing not supported yet");
+        }
+        if (lcFileName.endsWith(".json")) {
+            ObjectMapper mapper = new ObjectMapper();
+            Quiz quiz = mapper.readValue(file.getInputStream(), Quiz.class);
+            quizRepository.save(quiz);
+            model.addAttribute("quiz", quiz);
+        }
+        return "redirect:quizzes.html";
+    }
+
+    @GetMapping("/session.html")
+    public String startSession(@RequestParam String quizId, Model model) {
+        Quiz quiz = quizRepository.findById(new ObjectId(quizId)).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        model.addAttribute("quiz", quiz);
+        model.addAttribute("session", QuizSession.builder().host("fred").quizId(quiz.getId().toHexString()).build());
+        return "host/start";
+    }
+
+    @PostMapping("/session.html")
+    public RedirectView startSession(@ModelAttribute QuizSession session, Model model) {
+        // create session short name
+        session.setShortId(QuizName.newName());
+        // create secret
+        session.setHostKey(Long.toHexString(random.nextLong()));
+        // save quiz session to DB
+        sessionRepository.save(session);
+
+        model.addAttribute("sessionId", session.getShortId());
+        model.addAttribute("hostKey", session.getHostKey());
+
+        RedirectView rv = new RedirectView();
+        rv.setContextRelative(true);
+        rv.setUrl(session.getShortId()+"/host.html?hostKey="+session.getHostKey());
+        return rv;
+    }
+
+    @GetMapping("/{sessionId}/host.html")
+    public String hostSession(@PathVariable("sessionId") String sessionId, @RequestParam(name = "hostKey") Optional<String> hostKey, Model model) {
+        final String key = hostKey.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        final QuizSession session = sessionRepository.findByShortId(sessionId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND));
+        if (!session.getHostKey().equalsIgnoreCase(key)) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        // we have a session and they have the right key...
+        model.addAttribute("session", session);
+        return "host/host";
+    }
+}
