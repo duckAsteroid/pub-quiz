@@ -9,11 +9,17 @@
 <body>
 <div layout:fragment="content" id="page_content">
     <h1>Register your team</h1>
-    <form th:action="@{/newteam}" th:object="${greeting}" method="post">
+    <form th:action="@{./enterteam}" th:object="${team}" method="post">
         <div class="form-group">
             <label for="teamNameInput">Team name</label>
-            <input id="teamNameInput" class="form-control" type="text" aria-describedby="teamNameHelp" placeholder="A witty or amusing team name...">
+            <input id="teamNameInput" class="form-control" type="text" aria-describedby="teamNameHelp" placeholder="A witty or amusing team name..." th:field="*{name}">
             <small id="teamNameHelp" class="form-text text-muted">The name of the team using this computer</small>
+        </div>
+        <div class="col-md-6 form-group">
+            <label>Mascot</label>
+            <select class="form-control" th:field="*{mascot}">
+                <option th:each="emoji : ${emojis}" th:value="${emoji}" th:utext="${'&#'+emoji+';'}">Emoji here</option>
+            </select>
         </div>
         <button type="submit" class="btn btn-primary">Submit</button>
     </form>

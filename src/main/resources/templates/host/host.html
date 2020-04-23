@@ -7,14 +7,30 @@
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 
-    <script src="/app.js"></script>
-    <script src="/upload.js"></script>
+    <script src="/host.js"></script>
 </head>
 <body>
 <div layout:fragment="content" id="page_content">
-    <h1>Welcome @Dave Hosting quiz</h1>
-    <p>Give people the short name to copy to clipboard and share...</p>
-    <p>Show the teams currently participating</p>
+    <h1>Welcome <span th:text="${quizSession.getHost()}"></span>, hosting <span th:text="${quiz.getQuizName()}"></span></h1>
+    <p>To join the quiz your teams need the ID
+        <kbd th:text="${quizSession.getShortId()}"></kbd>
+        <button type="button" class="btn btn-light" title="Copy game name to clipboard" th:data-name="${quizSession.getShortId()}" onclick="copyLink($(this).data('name'))">
+            <i class="far fa-clone"></i>
+        </button>
+    </p>
+    <p>There are currently <span th:text="${quizSession.getTeams().size()}"></span> teams ready to play...
+        <ul class="list-group" th:each="team : ${quizSession.getTeams()}">
+            <li class="list-group-item">
+                <div th:text="${team.getName()}">Team Name</div>
+                <button type="button" class="btn btn-danger" th:data-team="${team.getId()}" onclick="kickout($(this).data('team'))">Kick Out!</button>
+                <button type="button" class="btn btn-light float-right"
+                        th:data-link="@{/ui/quiz/{quizId}/play.html(quizId=${quizSession.getShortId()})}"
+                        title="Copy team link to clipboard" onclick="copyLink($(this).data('link'))">
+                    <i class="far fa-clone" aria-hidden="true"></i>
+                </button>
+            </li>
+        </ul>
+    </p>
     <p>Show the current question (no answer) - so you can read it out.</p>
     <p>Provide UI to advance to next question...</p>
     <p>Send event to all when question changes and load new question</p>

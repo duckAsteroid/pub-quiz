@@ -11,10 +11,7 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * An active quiz session, led by a host asking questions to a set of teams
@@ -46,6 +43,14 @@ public class QuizSession {
     /** The teams taking part */
     @Builder.Default
     private List<Team> teams = new ArrayList<>();
+
+    public Optional<Team> getTeamNamed(String name) {
+        return teams.stream().filter(team -> team.getName().equals(name)).findFirst();
+    }
+
+    public Optional<Team> getTeamById(long teamId) {
+        return teams.stream().filter(team -> team.getId() == teamId).findFirst();
+    }
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class QuizSessionBuilder {}

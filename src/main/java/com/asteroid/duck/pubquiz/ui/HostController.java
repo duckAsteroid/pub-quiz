@@ -85,6 +85,13 @@ public class HostController {
         return rv;
     }
 
+    /**
+     * Used by the host of a quiz (redirect from {@link #startSession(String, Model)})
+     * @param sessionId The session short ID
+     * @param hostKey The host key
+     * @param model MVC model
+     * @return The page view name
+     */
     @GetMapping("/{sessionId}/host.html")
     public String hostSession(@PathVariable("sessionId") String sessionId, @RequestParam(name = "hostKey") Optional<String> hostKey, Model model) {
         final String key = hostKey.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
@@ -92,8 +99,11 @@ public class HostController {
         if (!session.getHostKey().equalsIgnoreCase(key)) {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
-        // we have a session and they have the right key...
-        model.addAttribute("session", session);
+        Quiz quiz = quizRepository.findById(new ObjectId(session.getQuizId())).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No quiz with ID=" + session.getQuizId()));
+
+        // we have a session, quiz and they have the right key...
+        model.addAttribute("quizSession", session);
+        model.addAttribute("quiz", quiz);
         return "host/host";
     }
 }
