@@ -1,5 +1,6 @@
 package com.asteroid.duck.pubquiz.rest;
 
+import com.asteroid.duck.pubquiz.rest.socket.Channel;
 import com.asteroid.duck.pubquiz.util.QuizName;
 import com.asteroid.duck.pubquiz.model.QuestionId;
 import com.asteroid.duck.pubquiz.model.QuizSession;
@@ -11,7 +12,7 @@ import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
 import com.asteroid.duck.pubquiz.repo.SubmissionRepository;
-import com.asteroid.duck.pubquiz.rest.events.SubmissionEvent;
+import com.asteroid.duck.pubquiz.rest.socket.events.SubmissionEvent;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 
@@ -61,7 +63,7 @@ public class SessionController {
         // save the session
         QuizSession savedSession = sessionRepository.save(session);
         // notify listeners a new session started
-        webSocket.convertAndSend(Channel.SESSIONS, savedSession.getShortId());
+        //webSocket.convertAndSend(Channel.SESSIONS, savedSession.getShortId());
         return savedSession;
     }
 
@@ -83,8 +85,10 @@ public class SessionController {
     public void deleteSession(@PathVariable("session") String sessionId, @RequestParam("key") String hostKey) {
         QuizSession session = getSession(sessionId);
         if (session.getHostKey().equals(hostKey)) {
+            List<Team> teams = session.getTeams();
             sessionRepository.deleteAllByShortId(sessionId);
             submissionRepository.deleteAllByQuizSession(sessionId);
+            // FIXME notify teams via socket
         }
         else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid host key");
     }
@@ -152,12 +156,12 @@ public class SessionController {
             QuestionId nextQuestion = iterator.next();
             session.setCurrentQuestion(nextQuestion);
             sessionRepository.save(session);
-            webSocket.convertAndSend(Channel.SESSIONS + "/" + sessionId, nextQuestion.toString());
+            webSocket.convertAndSend(Channel.session( sessionId), nextQuestion);
             return quiz.getById(nextQuestion);
         } else {
             session.setCurrentQuestion(null);
             sessionRepository.save(session);
-            webSocket.convertAndSend(Channel.SESSIONS + "/" + sessionId, "GAME OVER");
+            webSocket.convertAndSend(Channel.session( sessionId), "GAME OVER");
             // FIXME Log error - no next question
             throw new ResponseStatusException(HttpStatus.I_AM_A_TEAPOT);
         }
@@ -185,7 +189,7 @@ public class SessionController {
         SubmittedAnswer answer = SubmittedAnswer.builder().answer(answerContent).build();
         submission.getAnswers().put(id, answer);
         submissionRepository.save(submission);
-        webSocket.convertAndSend(Channel.SUBMISSION, SubmissionEvent.builder().questionId(id).team(team).build());
+        //webSocket.convertAndSend(Channel.SUBMISSION, SubmissionEvent.builder().questionId(id).team(team).build());
     }
 
 }

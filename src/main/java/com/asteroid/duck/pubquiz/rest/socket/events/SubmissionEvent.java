@@ -1,4 +1,4 @@
-package com.asteroid.duck.pubquiz.rest.events;
+package com.asteroid.duck.pubquiz.rest.socket.events;
 
 import com.asteroid.duck.pubquiz.model.QuestionId;
 import com.asteroid.duck.pubquiz.model.Team;

@@ -4,9 +4,12 @@ package com.asteroid.duck.pubquiz.ui;
 import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.asteroid.duck.pubquiz.model.Team;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
+import com.asteroid.duck.pubquiz.rest.socket.Channel;
+import com.asteroid.duck.pubquiz.rest.socket.events.TeamEvent;
 import org.apache.commons.io.IOUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,8 @@ public class PlayController {
 
     @Autowired
     private SessionRepository sessionRepository;
+    @Autowired
+    private SimpMessagingTemplate webSocket;
 
     private QuizSession getSession(String quizId) {
         return sessionRepository.findByShortId(quizId)
@@ -70,15 +75,16 @@ public class PlayController {
         QuizSession session = getSession(quizId);
         Optional<Team> existing = session.getTeamNamed(team.getName());
         if (!existing.isPresent()) {
-            team.setId(random.nextLong());
+            team.setId(Long.toHexString(random.nextLong()));
             session.getTeams().add(team);
             sessionRepository.save(session);
+            webSocket.convertAndSend(Channel.session(session.getShortId()), TeamEvent.builder().operation("entered").team(team).build());
         } else {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team name in use");
         }
         RedirectView rv = new RedirectView();
         rv.setContextRelative(true);
-        rv.setUrl("teams/"+Long.toHexString(team.getId())+"/answer.html");
+        rv.setUrl("teams/"+team.getId()+"/answer.html");
         return rv;
     }
 
@@ -86,14 +92,10 @@ public class PlayController {
     public String teamPage(@PathVariable("quizId") String sessionId, @PathVariable("teamId") String teamId, Model model) {
         QuizSession session = getSession(sessionId);
         model.addAttribute("quizSession", session);
-        try {
-            long teamIdLong = Long.parseUnsignedLong(teamId, 16);
-            Team team = session.getTeamById(teamIdLong).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No team with ID="+teamId));
-            model.addAttribute("team", team);
-            return "play/answer";
-        }
-        catch (NumberFormatException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Illegal team ID", e);
-        }
+
+        Team team = session.getTeamById(teamId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No team with ID="+teamId));
+        model.addAttribute("team", team);
+        return "play/answer";
+
     }
 }

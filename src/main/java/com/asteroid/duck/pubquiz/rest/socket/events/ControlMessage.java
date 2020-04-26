@@ -1,20 +1,25 @@
-package com.asteroid.duck.pubquiz.rest.events;
+package com.asteroid.duck.pubquiz.rest.socket.events;
 
+import com.asteroid.duck.pubquiz.model.QuestionId;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonPOJOBuilder;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.Builder;
 import lombok.Data;
 
+/**
+ * Quiz host control message to clients
+ */
 @Data
 @Builder
 @JsonDeserialize(builder = ControlMessage.ControlMessageBuilder.class)
 public class ControlMessage {
     public enum Action {
-        REVEAL_NEXT_QUESTION
+        CHANGE_QUESTION
     }
-    private String sessionId;
+
     private Action action;
+
+    private QuestionId questionId;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class ControlMessageBuilder {}

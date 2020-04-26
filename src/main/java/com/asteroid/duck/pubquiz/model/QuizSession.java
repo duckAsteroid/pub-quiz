@@ -19,7 +19,7 @@ import java.util.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Builder
+@Builder(toBuilder = true)
 @JsonDeserialize(builder = QuizSession.QuizSessionBuilder.class)
 @Document(collection = "sessions")
 public class QuizSession {
@@ -31,25 +31,28 @@ public class QuizSession {
     @Indexed(unique = true)
     private String shortId;
 
+    /** The state of the quiz */
+    private QuizSessionState state = QuizSessionState.WAITING_FOR_TEAMS;
+
     private String host;
 
     private String hostKey;
 
-    /** The ID of the {@link com.asteroid.duck.pubquiz.model.ask.Quiz} */
+    /** The ID of the {@link com.asteroid.duck.pubquiz.model.ask.Quiz} being played */
     private String quizId;
+
     /** A pointer to the current question */
     private QuestionId currentQuestion;
 
     /** The teams taking part */
-    @Builder.Default
     private List<Team> teams = new ArrayList<>();
 
     public Optional<Team> getTeamNamed(String name) {
         return teams.stream().filter(team -> team.getName().equals(name)).findFirst();
     }
 
-    public Optional<Team> getTeamById(long teamId) {
-        return teams.stream().filter(team -> team.getId() == teamId).findFirst();
+    public Optional<Team> getTeamById(String teamId) {
+        return teams.stream().filter(team -> team.getId().equals(teamId)).findFirst();
     }
 
     @JsonPOJOBuilder(withPrefix = "")

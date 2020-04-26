@@ -10,30 +10,37 @@
     <script src="/host.js"></script>
 </head>
 <body>
-<div layout:fragment="content" id="page_content">
+<div layout:fragment="content" id="page_content" th:data-sessionid="${quizSession.getShortId()}" th:data-key="${quizSession.getHostKey()}">
     <h1>Welcome <span th:text="${quizSession.getHost()}"></span>, hosting <span th:text="${quiz.getQuizName()}"></span></h1>
     <p>To join the quiz your teams need the ID
         <kbd th:text="${quizSession.getShortId()}"></kbd>
         <button type="button" class="btn btn-light" title="Copy game name to clipboard" th:data-name="${quizSession.getShortId()}" onclick="copyLink($(this).data('name'))">
             <i class="far fa-clone"></i>
         </button>
+        <button type="button" class="btn btn-light float-right"
+                th:data-link="@{/ui/quiz/{quizId}/play.html(quizId=${quizSession.getShortId()})}"
+                title="Copy team link to clipboard" onclick="copyLink($(this).data('link'))">
+            <i class="far fa-clone" aria-hidden="true"></i>
+        </button>
     </p>
     <p>There are currently <span th:text="${quizSession.getTeams().size()}"></span> teams ready to play...
-        <ul class="list-group" th:each="team : ${quizSession.getTeams()}">
-            <li class="list-group-item">
-                <div th:text="${team.getName()}">Team Name</div>
-                <button type="button" class="btn btn-danger" th:data-team="${team.getId()}" onclick="kickout($(this).data('team'))">Kick Out!</button>
-                <button type="button" class="btn btn-light float-right"
-                        th:data-link="@{/ui/quiz/{quizId}/play.html(quizId=${quizSession.getShortId()})}"
-                        title="Copy team link to clipboard" onclick="copyLink($(this).data('link'))">
-                    <i class="far fa-clone" aria-hidden="true"></i>
-                </button>
+        <ul id="teamList" class="list-group">
+            <li th:id="${'team-'+team.getId()}" class="list-group-item" th:each="team : ${quizSession.getTeams()}">
+                <span th:utext="${'&#'+team.getMascot()+';'}">Emoji</span>
+                <span th:text="${team.getName()}">Team Name</span>
+                <button type="button" class="btn btn-danger float-right" th:data-team="${team.getId()}" th:data-hostkey="${quizSession.getHostKey()}"
+                        onclick="kickout($(this))" title="Kick them out!"><i class="fas fa-times-circle"></i></button>
             </li>
         </ul>
     </p>
-    <p>Show the current question (no answer) - so you can read it out.</p>
-    <p>Provide UI to advance to next question...</p>
-    <p>Send event to all when question changes and load new question</p>
+    <p>Live connection status: <div id="connectionStatus" class="alert alert-secondary" role="alert"
+                                    th:data-sessionId="${quizSession.getShortId()}">Not connected</div></p>
+    <p>Add link to end/delete session (notify teams)
+        <button type="button" class="btn btn-danger float-right"
+                onclick="endSession()" title="Warning: This will end the session!"><i class="fas fa-times-circle"></i>End Session</button>
+    </p>
+    <p>Link to playing host page (where we can start quiz)</p>
+    <p>Add a "state" to session, only allow new teams when not "playing"</p>
 </div>
 </body>
 </html>

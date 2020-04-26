@@ -16,7 +16,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 public class Team {
-    private long id;
+    private String id;
     private String name;
     /** decimal for an emoji char in HTML5 */
     private String mascot;

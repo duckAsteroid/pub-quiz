@@ -29,9 +29,8 @@ public class QuizController {
      * @param quiz the quiz object from JSON
      * @return the quiz ID
      */
-    @RequestMapping(value = "/new", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_VALUE)
+    @RequestMapping(value = "/new", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_VALUE)
     public String create(@RequestBody Quiz quiz) {
-        // FIXME don't save over existing ID
         return quizRepository.save(quiz).getId().toHexString();
     }
 
