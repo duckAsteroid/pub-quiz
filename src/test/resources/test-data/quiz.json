@@ -8,11 +8,7 @@
       "imageReference" : null,
       "type" : "TEXT",
       "candidateAnswers" : null,
-      "correctAnswers" : [ {
-        "answer" : "2",
-        "points" : 1.0
-      } ],
-      "maxPoints" : 1
+      "maxPoints" : 0
     }, {
       "question" : "How many Ss in Mississippi?",
       "imageReference" : null,
@@ -30,11 +26,7 @@
         "code" : "D",
         "answer" : "Four"
       } ],
-      "correctAnswers" : [ {
-        "answer" : "D",
-        "points" : 1.0
-      } ],
-      "maxPoints" : 1
+      "maxPoints" : 0
     } ]
   }, {
     "title" : "Geography",
@@ -55,10 +47,6 @@
         "code" : "D",
         "answer" : "Derbyshire"
       } ],
-      "correctAnswers" : [ {
-        "answer" : "Cheshire",
-        "points" : 1.0
-      } ],
       "maxPoints" : 0
     }, {
       "question" : "In which country is the Chrimean Penninsula?",
@@ -77,14 +65,28 @@
         "code" : "D",
         "answer" : "Georgia"
       } ],
-      "correctAnswers" : [ {
-        "answer" : "Russia",
-        "points" : 0.5
-      }, {
-        "answer" : "Ukraine",
-        "points" : 0.5
-      } ],
-      "maxPoints" : 1
+      "maxPoints" : 0
     } ]
-  } ]
+  } ],
+  "answers" : {
+    "2.1" : [ {
+      "answer" : "Cheshire",
+      "points" : 0.0
+    } ],
+    "2.2" : [ {
+      "answer" : "Russia",
+      "points" : 0.0
+    }, {
+      "answer" : "Ukraine",
+      "points" : 0.0
+    } ],
+    "1.1" : [ {
+      "answer" : "2",
+      "points" : 0.0
+    } ],
+    "1.2" : [ {
+      "answer" : "D",
+      "points" : 0.0
+    } ]
+  }
 }

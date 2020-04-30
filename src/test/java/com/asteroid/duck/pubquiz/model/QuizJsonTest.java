@@ -6,6 +6,7 @@ import com.asteroid.duck.pubquiz.model.ask.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
@@ -49,6 +50,7 @@ public class QuizJsonTest {
         Quiz example = Quiz.builder()
                 .quizName("Test Quiz")
                 .rounds(Arrays.asList(r1, r2))
+                .answers(answers)
                 .build();
 
         return example;
@@ -66,13 +68,15 @@ public class QuizJsonTest {
 
     @Test
     public void testSerialize() throws JsonProcessingException {
+        SimpleModule simpleModule = new SimpleModule();
+        simpleModule.addKeyDeserializer(QuestionId.class, new QuestionIdSerializer());
         ObjectMapper objectMapper = new ObjectMapper();
+        objectMapper.registerModule(simpleModule);
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
         Quiz example = example();
         String jsonout = objectWriter.writeValueAsString(example);
         System.out.println(jsonout);
-
 
         Quiz readBack = objectMapper.readValue(jsonout, Quiz.class);
         assertEquals(example, readBack);

@@ -24,7 +24,7 @@ public class QuestionId {
     }
 
     public static QuestionId parse(String s) {
-        String[] split = s.split(SEPARATOR);
+        String[] split = s.split("\\"+SEPARATOR);
         return builder().round(Integer.parseInt(split[0]))
                 .question(Integer.parseInt(split[1]))
                 .build();
