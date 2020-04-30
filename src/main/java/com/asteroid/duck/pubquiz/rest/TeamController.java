@@ -4,6 +4,7 @@ import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.asteroid.duck.pubquiz.model.Team;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
 import com.asteroid.duck.pubquiz.rest.socket.Channel;
+import com.asteroid.duck.pubquiz.rest.socket.events.TeamEvent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
@@ -13,6 +14,8 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.StreamSupport;
+
+import static com.asteroid.duck.pubquiz.util.KeyVerifier.verify;
 
 @RestController
 @RequestMapping("/rest")
@@ -61,32 +64,15 @@ public class TeamController {
 
     @RequestMapping(value = "/sessions/{session}/teams/{teamId}", method = RequestMethod.DELETE)
     public boolean removeTeam(@PathVariable("session") String sessionId, @PathVariable("teamId") String teamId, @RequestParam("key") Optional<String> key) {
-        String keyValue = key.orElseThrow(() -> new ResponseStatusException(HttpStatus.FORBIDDEN));
+        String actualKey = verify(key);
         QuizSession session = findSession(sessionId);
-        if (!session.getHostKey().equals(keyValue)) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid host key");
-        }
+        verify(actualKey, session);
         Team team = findTeam(sessionId, teamId);
         boolean success = session.getTeams().remove(team);
         sessionRepository.save(session);
+        webSocket.convertAndSend(Channel.teams(sessionId), TeamEvent.builder().team(team).operation(TeamEvent.OP_LEFT).build());
         return success;
     }
 
-    /**
-     * Create a new team in a session
-     * @param sessionId
-     * @param name
-     * @return
-     */
-    @RequestMapping(value = "/sessions/{session}/teams/new", method = RequestMethod.POST)
-    public Team newTeam(@PathVariable("session") String sessionId, @RequestParam("name") String name) {
-        Team team = Team.builder().name(name).build();
-        QuizSession session = findSession(sessionId);
-        List<Team> teams = session.getTeams();
-        if (teams.contains(team)) throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Team name already taken");
-        teams.add(team);
-        sessionRepository.save(session);
-        webSocket.convertAndSend(Channel.session(sessionId), team);
-        return team;
-    }
+
 }

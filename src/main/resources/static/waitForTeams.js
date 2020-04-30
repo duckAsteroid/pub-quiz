@@ -1,3 +1,16 @@
+$(function getTeams() {
+    var sessionId = $('#page_content').data('sessionid');
+    $.getJSON({
+        url: `/rest/sessions/${sessionId}/teams`,
+        method: 'GET',
+        success: function(result) {
+            console.log(result);
+            // navigate to root
+            result.forEach(addTeam);
+        }
+    });
+});
+
 
 async function copyLink(clip) {
     var url = new URL(clip, document.baseURI).href
@@ -12,11 +25,11 @@ function kickout(teamListItem) {
     // send JSON remove command
     $.ajax({
         url: `/rest/sessions/${sessionId}/teams/${team}?key=${key}`,
-        type: 'DELETE',
+        method: 'DELETE',
         success: function(result) {
             console.log(result);
             // Do something with the result
-            teamListItem.parent().remove();
+            teamListItem.parent().addClass('text-muted');
         }
     });
 }
@@ -27,7 +40,7 @@ function endSession() {
 
     $.ajax({
         url: `/rest/sessions/${sessionId}?key=${key}`,
-        type: 'DELETE',
+        method: 'DELETE',
         success: function(result) {
             console.log(result);
             // navigate to root
@@ -36,19 +49,16 @@ function endSession() {
     });
 }
 
-var stompClient = null;
 
 $(function () {
-    var statusIndicator = $('#connectionStatus')
-    var sessionId = statusIndicator.data("sessionid");
+    var sessionId = $('#page_content').data("sessionid");
     // connect to socket
     var socket = new SockJS('/quiz-websocket');
-    stompClient = Stomp.over(socket);
+    var stompClient = Stomp.over(socket);
     stompClient.connect({}, function (frame) {
-        statusIndicator.text("Connected");
-        statusIndicator.attr('class', 'alert alert-success');
+        displayStatus(true);
         console.log('Connected: ' + frame);
-        stompClient.subscribe(`/client/sessions/${sessionId}`, function (envelope) {
+        stompClient.subscribe(`/client/sessions/${sessionId}/teams`, function (envelope) {
             var msg = JSON.parse(envelope.body);
             if (msg.operation === 'entered') {
                 addTeam(msg.team);
@@ -57,30 +67,26 @@ $(function () {
             }
         }, {}, function () {
             // on disconnect
-            statusIndicator.text("Connection lost, refresh this page");
-            statusIndicator.attr('class', 'alert alert-danger');
+            displayStatus(false);
         });
     });
 });
 
-function disconnect() {
-    if (stompClient !== null) {
-        stompClient.disconnect();
-    }
-    console.log("Disconnected");
-}
-
-function sendName() {
-    stompClient.send("/app/hello", {}, JSON.stringify({'name': $("#name").val()}));
-}
-
 function addTeam(team) {
+    var sessionId = $("#page_content").data('sessionid');
     $("#teamList").append(
         `<li class="list-group-item" id="team-${team.id}">
                 <span>&#${team.mascot};</span>
                 <span>${team.name}</span>
                 <button type="button" class="btn btn-danger float-right" data-team="${team.id}"
-                        onclick="kickout($(this))" title="Kick them out!"><i class="fas fa-times-circle"></i></button>
+                        onclick="kickout($(this))" title="Kick them out!">
+                    <i class="fas fa-times-circle"></i>
+                </button>
+                <button type="button" class="btn btn-light float-right" title="Send this URL to the team to play" 
+                        onclick="copyLink('/ui/quiz/${sessionId}/teams/${team.id}/answer.html')">
+                    <i class="far fa-clone"></i>
+                </button>
+                        
     </li>`);
 }
 

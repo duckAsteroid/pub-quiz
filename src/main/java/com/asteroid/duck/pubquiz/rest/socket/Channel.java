@@ -14,4 +14,8 @@ public class Channel {
     public static String session(String sessionId) {
         return CLIENT_PREFIX + "/sessions/" + sessionId;
     }
+
+    public static String teams(String sessionShortId) {
+        return session(sessionShortId) + "/teams";
+    }
 }

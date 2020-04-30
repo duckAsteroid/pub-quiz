@@ -24,17 +24,10 @@ public class Question {
     private QuestionType type;
     /** Candidate answers (if multiple choice) */
     private List<CandidateAnswer> candidateAnswers;
-    /** The acceptable answers */
-    private List<AcceptedAnswer> correctAnswers;
     /** What is the question worth (maximum) */
     private int maxPoints;
 
     @JsonPOJOBuilder(withPrefix = "")
     public static class QuestionBuilder {
-        private List<AcceptedAnswer> correctAnswers = new ArrayList<>();
-        public QuestionBuilder correctAnswer(String answer) {
-            correctAnswers.add(AcceptedAnswer.builder().answer(answer).points(maxPoints).build());
-            return this;
-        }
     }
 }

@@ -10,6 +10,8 @@ import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.*;
 
@@ -32,6 +34,7 @@ public class QuizSession {
     private String shortId;
 
     /** The state of the quiz */
+    @Builder.Default
     private QuizSessionState state = QuizSessionState.WAITING_FOR_TEAMS;
 
     private String host;
@@ -45,6 +48,7 @@ public class QuizSession {
     private QuestionId currentQuestion;
 
     /** The teams taking part */
+    @Builder.Default
     private List<Team> teams = new ArrayList<>();
 
     public Optional<Team> getTeamNamed(String name) {

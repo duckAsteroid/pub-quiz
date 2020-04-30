@@ -10,6 +10,9 @@ import lombok.Data;
 @Builder
 @JsonDeserialize(builder = TeamEvent.TeamEventBuilder.class)
 public class TeamEvent {
+    public static final String OP_ENTERED = "entered";
+    public static final String OP_LEFT = "left";
+
     private String operation;
     private Team team;
 

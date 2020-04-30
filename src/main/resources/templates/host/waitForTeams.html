@@ -3,11 +3,11 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{template}">
 <head>
-    <title>Host Quiz </title>
+    <title>Waiting for teams</title>
     <script src="/webjars/sockjs-client/sockjs.min.js"></script>
     <script src="/webjars/stomp-websocket/stomp.min.js"></script>
 
-    <script src="/host.js"></script>
+    <script src="/waitForTeams.js"></script>
 </head>
 <body>
 <div layout:fragment="content" id="page_content" th:data-sessionid="${quizSession.getShortId()}" th:data-key="${quizSession.getHostKey()}">
@@ -23,18 +23,10 @@
             <i class="far fa-clone" aria-hidden="true"></i>
         </button>
     </p>
-    <p>There are currently <span th:text="${quizSession.getTeams().size()}"></span> teams ready to play...
-        <ul id="teamList" class="list-group">
-            <li th:id="${'team-'+team.getId()}" class="list-group-item" th:each="team : ${quizSession.getTeams()}">
-                <span th:utext="${'&#'+team.getMascot()+';'}">Emoji</span>
-                <span th:text="${team.getName()}">Team Name</span>
-                <button type="button" class="btn btn-danger float-right" th:data-team="${team.getId()}" th:data-hostkey="${quizSession.getHostKey()}"
-                        onclick="kickout($(this))" title="Kick them out!"><i class="fas fa-times-circle"></i></button>
-            </li>
-        </ul>
-    </p>
-    <p>Live connection status: <div id="connectionStatus" class="alert alert-secondary" role="alert"
-                                    th:data-sessionId="${quizSession.getShortId()}">Not connected</div></p>
+    <p>Live connection status: <div th:replace="components/status.html :: statusIcon"></div></p>
+    <h2>Waiting for teams to join...</h2>
+    <ul id="teamList" class="list-group">
+    </ul>
     <p>Add link to end/delete session (notify teams)
         <button type="button" class="btn btn-danger float-right"
                 onclick="endSession()" title="Warning: This will end the session!"><i class="fas fa-times-circle"></i>End Session</button>

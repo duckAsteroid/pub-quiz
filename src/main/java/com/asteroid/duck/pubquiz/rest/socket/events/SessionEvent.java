@@ -11,9 +11,10 @@ import lombok.Data;
  */
 @Data
 @Builder
-@JsonDeserialize(builder = ControlMessage.ControlMessageBuilder.class)
-public class ControlMessage {
+@JsonDeserialize(builder = SessionEvent.SessionEventBuilder.class)
+public class SessionEvent {
     public enum Action {
+        SESSION_ENDED,
         CHANGE_QUESTION
     }
 
@@ -22,5 +23,5 @@ public class ControlMessage {
     private QuestionId questionId;
 
     @JsonPOJOBuilder(withPrefix = "")
-    public static class ControlMessageBuilder {}
+    public static class SessionEventBuilder {}
 }

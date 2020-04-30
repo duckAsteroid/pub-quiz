@@ -4,11 +4,38 @@
       xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
       layout:decorate="~{template}">
 <head>
-    <title>The Corona Arms : Pub Quiz</title>
+    <title>Quiz Session </title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+    <script src="/answer.js"></script>
+    <style>
+        .wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        #sidebar {
+            width: 250px;
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 100vh;
+            z-index: 999;
+            background: #7386D5;
+            color: #fff;
+            transition: all 0.3s;
+        }
+    </style>
 </head>
 <body>
-<div layout:fragment="content" id="page_content">
-    <h1>Answer</h1>
+<div layout:fragment="content" id="page_content"
+     th:data-sessionid="${quizSession.getShortId()}"
+     th:data-teamid="${team.getId()}" class="wrapper">
+    <nav th:replace="components/questions.html :: questionsNav"></nav>
+    <div id="content">
+        <h1><span th:utext="${'&#' + team.getMascot() + ';'}"></span> <span th:text="${team.getName()}"></span></h1>
+        <div th:replace="components/status.html :: statusIcon"></div>
+    </div>
 </div>
 </body>
 </html>

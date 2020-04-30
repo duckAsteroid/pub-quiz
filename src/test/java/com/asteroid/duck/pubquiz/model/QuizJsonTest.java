@@ -9,9 +9,7 @@ import com.fasterxml.jackson.databind.ObjectWriter;
 import org.bson.types.ObjectId;
 import org.junit.jupiter.api.Test;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -21,12 +19,10 @@ public class QuizJsonTest {
         Question r1q1 = Question.builder()
                 .type(QuestionType.TEXT)
                 .question("How many Ps in Mississippi?")
-                .correctAnswer("2")
                 .build();
         Question r1q2 = Question.builder()
                 .type(QuestionType.MULTIPLE_CHOICE)
                 .candidateAnswers(CandidateAnswer.alphaChoices("One", "Two", "Three", "Four"))
-                .correctAnswer("D")
                 .question("How many Ss in Mississippi?")
                 .build();;
         Round r1 = Round.builder().title("General Knowledge").questions(Arrays.asList(r1q1, r1q2)).build();
@@ -35,16 +31,20 @@ public class QuizJsonTest {
                 .type(QuestionType.MULTIPLE_CHOICE)
                 .candidateAnswers(CandidateAnswer.alphaChoices("Lancashire", "Cheshire", "Yorkshire", "Derbyshire"))
                 .question("In which county is Altrincham?")
-                .correctAnswer("Cheshire")
                 .build();
 
         Question r2q2 = Question.builder()
                 .type(QuestionType.MULTIPLE_CHOICE)
                 .candidateAnswers(CandidateAnswer.alphaChoices("Russia", "Ukraine", "Turkey", "Georgia"))
                 .question("In which country is the Chrimean Penninsula?")
-                .correctAnswers(Arrays.asList(AcceptedAnswer.builder().answer("Russia").build(), AcceptedAnswer.builder().answer("Ukraine").build()))
                 .build();
         Round r2 = Round.builder().title("Geography").questions(Arrays.asList(r2q1, r2q2)).build();
+
+        Map<QuestionId, List<AcceptedAnswer>> answers = new HashMap<>();
+        answers.put(new QuestionId(1, 1), Collections.singletonList(AcceptedAnswer.builder().answer("2").build()));
+        answers.put(new QuestionId(1, 2), Collections.singletonList(AcceptedAnswer.builder().answer("D").build()));
+        answers.put(new QuestionId(2, 1), Collections.singletonList(AcceptedAnswer.builder().answer("Cheshire").build()));
+        answers.put(new QuestionId(2,2), Arrays.asList(AcceptedAnswer.builder().answer("Russia").build(), AcceptedAnswer.builder().answer("Ukraine").build()));
 
         Quiz example = Quiz.builder()
                 .quizName("Test Quiz")
