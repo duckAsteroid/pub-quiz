@@ -5,15 +5,15 @@
     "title" : "General Knowledge",
     "questions" : [ {
       "question" : "How many Ps in Mississippi?",
-      "imageReference" : "https://upload.wikimedia.org/wikipedia/commons/2/29/Paddling_the_Mississippi_River_%286972322139%29.jpg",
-      "imageAttribution" : "U.S. Fish and Wildlife Service Headquarters / Public domain (via Wikimedia commons)",
+      "imageReference" : null,
+      "imageAttribution" : null,
       "type" : "TEXT",
       "candidateAnswers" : null,
-      "maxPoints" : 1
+      "maxPoints" : 0
     }, {
       "question" : "How many Ss in Mississippi?",
-      "imageReference" : "https://upload.wikimedia.org/wikipedia/commons/2/29/Paddling_the_Mississippi_River_%286972322139%29.jpg",
-      "imageAttribution" : "U.S. Fish and Wildlife Service Headquarters / Public domain (via Wikimedia commons)",
+      "imageReference" : null,
+      "imageAttribution" : null,
       "type" : "MULTIPLE_CHOICE",
       "candidateAnswers" : [ {
         "code" : "A",
@@ -28,14 +28,14 @@
         "code" : "D",
         "answer" : "Four"
       } ],
-      "maxPoints" : 1
+      "maxPoints" : 0
     } ]
   }, {
     "title" : "Geography",
     "questions" : [ {
       "question" : "In which county is Altrincham?",
-      "imageReference" : "https://upload.wikimedia.org/wikipedia/commons/7/73/Altrincham_train_and_tram_station.jpg",
-      "imageAttribution" : "Zack Hallam / CC BY-SA (https://creativecommons.org/licenses/by-sa/4.0) (via Wikimedia commons)",
+      "imageReference" : null,
+      "imageAttribution" : null,
       "type" : "MULTIPLE_CHOICE",
       "candidateAnswers" : [ {
         "code" : "A",
@@ -50,11 +50,11 @@
         "code" : "D",
         "answer" : "Derbyshire"
       } ],
-      "maxPoints" : 1
+      "maxPoints" : 0
     }, {
       "question" : "In which country is the Chrimean Penninsula?",
-      "imageReference" : "https://upload.wikimedia.org/wikipedia/commons/a/a3/Crimea%2C_Ai-Petri%2C_low_clouds.jpg",
-      "imageAttribution" : "Dmytro Balkhovitin / CC BY-SA (https://creativecommons.org/licenses/by-sa/4.0) (via Wikimedia commons)",
+      "imageReference" : null,
+      "imageAttribution" : null,
       "type" : "MULTIPLE_CHOICE",
       "candidateAnswers" : [ {
         "code" : "A",
@@ -69,28 +69,32 @@
         "code" : "D",
         "answer" : "Georgia"
       } ],
-      "maxPoints" : 1
+      "maxPoints" : 0
     } ]
   } ],
   "answers" : {
-    "2.1" : [ {
-      "answer" : "Cheshire",
-      "points" : 1.0
-    } ],
-    "2.2" : [ {
-      "answer" : "Russia",
-      "points" : 0.5
-    }, {
-      "answer" : "Ukraine",
-      "points" : 0.5
-    } ],
-    "1.1" : [ {
-      "answer" : "2",
-      "points" : 1.0
-    } ],
-    "1.2" : [ {
-      "answer" : "D",
-      "points" : 1.0
-    } ]
+    "1" : {
+      "1" : [ {
+        "answer" : "2",
+        "points" : 0.0
+      } ],
+      "2" : [ {
+        "answer" : "D",
+        "points" : 0.0
+      } ]
+    },
+    "2" : {
+      "1" : [ {
+        "answer" : "Cheshire",
+        "points" : 0.0
+      } ],
+      "2" : [ {
+        "answer" : "Russia",
+        "points" : 0.0
+      }, {
+        "answer" : "Ukraine",
+        "points" : 0.0
+      } ]
+    }
   }
 }

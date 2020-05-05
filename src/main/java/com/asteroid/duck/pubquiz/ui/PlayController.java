@@ -100,10 +100,9 @@ public class PlayController {
     public String teamPage(@PathVariable("quizId") String sessionId, @PathVariable("teamId") String teamId, Model model) {
         QuizSession session = getSession(sessionId);
         model.addAttribute("quizSession", session);
-        model.addAttribute("quiz", quizRepository.findById(new ObjectId(session.getQuizId())));
+        model.addAttribute("quiz", quizRepository.findById(new ObjectId(session.getQuizId())).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Cannot locate quiz ID="+session.getQuizId())));
         Team team = session.getTeamById(teamId).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No team with ID="+teamId));
         model.addAttribute("team", team);
         return "play/answer";
-
     }
 }

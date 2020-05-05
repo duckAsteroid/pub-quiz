@@ -21,7 +21,7 @@ public class Question {
     /** A URL to a picture relevant to the question */
     private URL imageReference;
     /** An attribution for the picture (if any) */
-    private URL imageAttribution;
+    private String imageAttribution;
     /** The kind of question */
     private QuestionType type;
     /** Candidate answers (if multiple choice) */

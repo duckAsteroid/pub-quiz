@@ -3,6 +3,7 @@ package com.asteroid.duck.pubquiz.model;
 import com.asteroid.duck.pubquiz.model.answer.Submission;
 import com.asteroid.duck.pubquiz.model.answer.SubmittedAnswer;
 import com.asteroid.duck.pubquiz.model.ask.*;
+import com.asteroid.duck.pubquiz.util.JSON;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.ObjectWriter;
@@ -41,11 +42,15 @@ public class QuizJsonTest {
                 .build();
         Round r2 = Round.builder().title("Geography").questions(Arrays.asList(r2q1, r2q2)).build();
 
-        Map<QuestionId, List<AcceptedAnswer>> answers = new HashMap<>();
-        answers.put(new QuestionId(1, 1), Collections.singletonList(AcceptedAnswer.builder().answer("2").build()));
-        answers.put(new QuestionId(1, 2), Collections.singletonList(AcceptedAnswer.builder().answer("D").build()));
-        answers.put(new QuestionId(2, 1), Collections.singletonList(AcceptedAnswer.builder().answer("Cheshire").build()));
-        answers.put(new QuestionId(2,2), Arrays.asList(AcceptedAnswer.builder().answer("Russia").build(), AcceptedAnswer.builder().answer("Ukraine").build()));
+        Map<Integer, Map<Integer, List<AcceptedAnswer>>> answers = new HashMap<>();
+        Map<Integer, List<AcceptedAnswer>> r1answers = new HashMap<>();
+        r1answers.put( 1, Collections.singletonList(AcceptedAnswer.builder().answer("2").build()));
+        r1answers.put( 2, Collections.singletonList(AcceptedAnswer.builder().answer("D").build()));
+        answers.put(1, r1answers);
+        Map<Integer, List<AcceptedAnswer>> r2answers = new HashMap<>();
+        r2answers.put(1, Collections.singletonList(AcceptedAnswer.builder().answer("Cheshire").build()));
+        r2answers.put(2, Arrays.asList(AcceptedAnswer.builder().answer("Russia").build(), AcceptedAnswer.builder().answer("Ukraine").build()));
+        answers.put(2, r2answers);
 
         Quiz example = Quiz.builder()
                 .quizName("Test Quiz")
@@ -68,10 +73,7 @@ public class QuizJsonTest {
 
     @Test
     public void testSerialize() throws JsonProcessingException {
-        SimpleModule simpleModule = new SimpleModule();
-        simpleModule.addKeyDeserializer(QuestionId.class, new QuestionIdSerializer());
-        ObjectMapper objectMapper = new ObjectMapper();
-        objectMapper.registerModule(simpleModule);
+        ObjectMapper objectMapper = JSON.mapper();
         ObjectWriter objectWriter = objectMapper.writerWithDefaultPrettyPrinter();
 
         Quiz example = example();

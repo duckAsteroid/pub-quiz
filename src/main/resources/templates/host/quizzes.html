@@ -5,6 +5,20 @@
       layout:decorate="~{template}">
 <head>
     <title>The Corona Arms : Pub Quiz</title>
+    <script>
+        function deleteQuiz(btn) {
+            var quizId = btn.data('quizid');
+            $.ajax({
+                url: `/rest/quizzes/${quizId}`,
+                method: 'DELETE',
+                success: function(result) {
+                    console.log(result);
+                    // Do something with the result
+                    $(`#quiz-${quizId}`).remove();
+                }
+            })
+        }
+    </script>
 </head>
 <body>
 <div layout:fragment="content" id="page_content">
@@ -17,14 +31,18 @@
                 <th>ID</th>
                 <th>Name</th>
                 <th>Rounds</th>
+                <th>Actions</th>
             </tr>
             </thead>
             <tbody>
-            <tr th:each="quiz : ${quizzes}">
-                <td th:text="${{quiz.getId().toHexString()}}">HEX-ID</td>
-                <td th:text="${{quiz.getQuizName()}}">Name</td>
-                <td th:text="${{quiz.getRounds().size()}}">Rounds</td>
-                <td><a th:href="@{/ui/host/session.html(quizId=${quiz.getId().toHexString()})}">Play</a></td>
+            <tr th:each="quiz : ${quizzes}" th:id="'quiz-'+${quiz.getId().toHexString()}">
+                <td th:text="${quiz.getId().toHexString()}">HEX-ID</td>
+                <td th:text="${quiz.getQuizName()}">Name</td>
+                <td th:text="${quiz.getRounds().size()}">Rounds</td>
+                <td>
+                    <button type="button" class="btn btn-danger" th:data-quizid="${quiz.getId().toHexString()}" onclick="deleteQuiz($(this))"><i class="fas fa-times-circle"></i></button>
+                    <a th:href="@{/ui/host/session.html(quizId=${quiz.getId().toHexString()})}">Play</a>
+                </td>
             </tr>
             </tbody>
         </table>

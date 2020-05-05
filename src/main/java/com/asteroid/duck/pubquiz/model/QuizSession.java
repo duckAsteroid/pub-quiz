@@ -42,6 +42,7 @@ public class QuizSession {
     private String hostKey;
 
     /** The ID of the {@link com.asteroid.duck.pubquiz.model.ask.Quiz} being played */
+    @Indexed
     private String quizId;
 
     /** A pointer to the current question */

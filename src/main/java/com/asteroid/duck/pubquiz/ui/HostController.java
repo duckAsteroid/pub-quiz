@@ -4,6 +4,7 @@ import com.asteroid.duck.pubquiz.model.QuizSession;
 import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
+import com.asteroid.duck.pubquiz.util.JSON;
 import com.asteroid.duck.pubquiz.util.QuizName;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.bson.types.ObjectId;
@@ -50,7 +51,7 @@ public class HostController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Excel parsing not supported yet");
         }
         if (lcFileName.endsWith(".json")) {
-            ObjectMapper mapper = new ObjectMapper();
+            ObjectMapper mapper = JSON.mapper();
             Quiz quiz = mapper.readValue(file.getInputStream(), Quiz.class);
             quizRepository.save(quiz);
             model.addAttribute("quiz", quiz);

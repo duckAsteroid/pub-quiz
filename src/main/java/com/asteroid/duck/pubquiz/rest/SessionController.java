@@ -14,6 +14,7 @@ import com.asteroid.duck.pubquiz.model.ask.Quiz;
 import com.asteroid.duck.pubquiz.repo.QuizRepository;
 import com.asteroid.duck.pubquiz.repo.SessionRepository;
 import com.asteroid.duck.pubquiz.repo.SubmissionRepository;
+import lombok.Data;
 import org.bson.types.ObjectId;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -21,9 +22,11 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.Collectors;
 
 import static com.asteroid.duck.pubquiz.util.KeyVerifier.verify;
 
@@ -74,7 +77,7 @@ public class SessionController {
      * @param sessionId the short ID of the session
      * @return the session (and it's current teams)
      */
-    public QuizSession getSession(String sessionId) {
+    private QuizSession getSession(String sessionId) {
         Optional<QuizSession> session = sessionRepository.findByShortId(sessionId);
         return session.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No session for ID "+session));
     }
@@ -96,12 +99,29 @@ public class SessionController {
         else throw new ResponseStatusException(HttpStatus.FORBIDDEN, "Invalid host key");
     }
 
+    @Data
+    public static class RoundCarrier {
+        private final String title;
+        private final int questionCount;
+
+        public RoundCarrier(Round r) {
+            this.title = r.getTitle();
+            this.questionCount = Optional.ofNullable(r.getQuestions()).orElse(Collections.emptyList()).size();
+        }
+
+        public static RoundCarrier from(Round r) {
+            return new RoundCarrier(r);
+        }
+    }
+
     @RequestMapping("/{session}/rounds")
-    public List<Round> getRounds(@PathVariable("session") String sessionId) {
+    public List<RoundCarrier> getRounds(@PathVariable("session") String sessionId) {
         QuizSession session = getSession(sessionId);
         Optional<Quiz> found = quizRepository.findById(new ObjectId(session.getQuizId()));
         Quiz quiz = found.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "No quiz for ID " + session.getQuizId()));
-        return quiz.getRounds();
+        return quiz.getRounds().stream()
+                .map(RoundCarrier::from)
+                .collect(Collectors.toList());
     }
 
     /**

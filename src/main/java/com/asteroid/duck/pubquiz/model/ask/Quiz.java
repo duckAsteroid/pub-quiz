@@ -29,7 +29,7 @@ public class Quiz {
     private ObjectId id;
     private String quizName;
     private List<Round> rounds;
-    private Map<QuestionId, List<AcceptedAnswer>> answers;
+    private Map<Integer, Map<Integer, List<AcceptedAnswer>>> answers;
 
     public Question getById(QuestionId questionId) throws NoSuchElementException {
         Round round = rounds.get(questionId.getRound());
