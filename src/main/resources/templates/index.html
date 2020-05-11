@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>The Corona Arms : Pub Quiz</title>
+</head>
+<body>
+    <div layout:fragment="content" id="page_content">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h1 class="display-4">The Corona Arms</h1>
+                <h2 class="display-2">Pub Quiz</h2>
+                <p class="lead">Welcome to The Corona Arms - a virtual online pub. Sorry there's no beer or wine (bring your own).</p>
+                <p class="lead">There is a pub quiz though...</p>
+                <hr class="my-4">
+                <p>Ready to enter?</p>
+                <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                        <span class="input-group-text">Quiz ID:</span>
+                    </div>
+                    <input type="text" class="form-control" id="quizIdText" aria-label="Enter the quiz name">
+                    <div class="input-group-append">
+                        <a class="btn btn-outline-secondary" role="button" id="quizLink" href="">Enter</a>
+                    </div>
+                </div>
+                <script language="JavaScript">
+                    $("#quizIdText").keyup(function(){
+                        $('#quizLink').attr("href", `/ui/quiz/${$(this).val()}/play.html`);
+                    });
+                </script>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>

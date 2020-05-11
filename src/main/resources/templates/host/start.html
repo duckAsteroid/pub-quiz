@@ -1,0 +1,24 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Host Quiz </title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
+    <script src="/app.js"></script>
+    <script src="/upload.js"></script>
+</head>
+<body>
+<div layout:fragment="content" id="page_content">
+    <h1>Ok, great </h1>
+    <form th:action="@{/ui/host/session.html}" th:object="${session}" method="post">
+        <div th:text="${quiz.getQuizName()}"></div>
+        <input type="text" readonly="true" th:field="*{quizId}">
+        <input type="text" th:field="*{host}">
+        <button type="submit">Submit</button>
+    </form>
+</div>
+</body>
+</html>

@@ -11,6 +11,9 @@ import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Map;
 
+/**
+ * A container for all the answers submitted by a team to the quiz
+ */
 @Data
 @Builder
 @Document(collection = "submissions")

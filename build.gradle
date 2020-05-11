@@ -1,14 +1,23 @@
 plugins {
-    id "org.springframework.boot" version "2.2.5.RELEASE"
-    id "io.freefair.lombok" version "5.0.0-rc6"
+    id "org.springframework.boot" version "2.2.6.RELEASE"
+    id 'io.spring.dependency-management' version '1.0.9.RELEASE'
+    id "io.freefair.lombok" version "5.0.1"
+    id 'com.palantir.docker-run' version '0.25.0'
     id 'java'
+    id "com.github.ben-manes.versions" version "0.28.0"
 }
 
 apply plugin: 'io.spring.dependency-management'
 
 group = 'com.asteroid.duck'
 version = '0.0.1-SNAPSHOT'
-sourceCompatibility = '1.8'
+
+configurations {
+    developmentOnly
+    runtimeClasspath {
+        extendsFrom developmentOnly
+    }
+}
 
 repositories {
     jcenter()
@@ -16,12 +25,34 @@ repositories {
 }
 
 dependencies {
+    // sockets
     implementation 'org.springframework.boot:spring-boot-starter-websocket'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    developmentOnly 'org.springframework.boot:spring-boot-devtools'
 
-    // Spring Framework - Spring Boot - Data Access - Mongo DB (Microsoft Azure Cosmos DB Mongo DB API/Projection)
+    // Thymeleaf templates for HTML Pages
+    implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+    compile 'nz.net.ultraq.thymeleaf:thymeleaf-layout-dialect:2.3.0'
+
+    // web jars for sockets
+    implementation 'org.webjars:webjars-locator-core'
+    implementation 'org.webjars:sockjs-client:1.0.2'
+    implementation 'org.webjars:stomp-websocket:2.3.3'
+    implementation 'org.webjars:bootstrap:4.4.1'
+    implementation 'org.webjars:jquery:3.4.1'
+    implementation 'org.webjars:font-awesome:5.13.0'
+
+
+    // File upload
+    compile 'commons-fileupload:commons-fileupload:1.4'
+    compile 'commons-io:commons-io:2.6'
+
+
+
+    // Spring Framework - Spring Boot - Data Access - Mongo DB
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-data-mongodb'
 
-    // Embedded MongoDB (https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo)
+    // Embedded MongoDB for testing (https://github.com/flapdoodle-oss/de.flapdoodle.embed.mongo)
     testRuntime group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo'
 
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
@@ -31,4 +62,12 @@ dependencies {
 
 test {
     useJUnitPlatform()
+}
+
+dockerRun {
+    name 'quiz-mongo'
+    image 'mongo'
+    ports '27017:27017'
+    daemonize true
+    arguments '-e', 'MONGO_INITDB_ROOT_USERNAME=admin', '-e', 'MONGO_INITDB_ROOT_PASSWORD=secret'
 }

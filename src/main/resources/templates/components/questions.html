@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+
+</head>
+<body>
+<div>
+    <nav th:fragment="questionsNav" id="sidebar">
+        <script src="/questions.js"></script>
+        <div class="sidebar-header">
+            <h3 id="quizName">Quiz: <span th:text="${quiz.getQuizName()}">Quiz Name</span></h3>
+            <h4 id="hostName">Host: <span th:text="${quizSession.getHost()}">Host Name</span></h4>
+            <p id="quizSessionStatus" th:text="${quizSession.getState()}" th:class="(${quizSession.getState() == T(com.asteroid.duck.pubquiz.model.QuizSessionState).PLAYING})? 'text-success' : ''">Session status</p>
+        </div>
+        <ul id="rounds" class="list-group text-muted" style="cursor: pointer">
+        </ul>
+        <span th:replace="components/status.html :: statusIcon"></span>
+    </nav>
+</div>
+</body>
+</html>

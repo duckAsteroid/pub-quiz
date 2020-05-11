@@ -1,0 +1,41 @@
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{template}">
+<head>
+    <title>Waiting for teams</title>
+    <script src="/webjars/sockjs-client/sockjs.min.js"></script>
+    <script src="/webjars/stomp-websocket/stomp.min.js"></script>
+
+    <script src="/waitForTeams.js"></script>
+</head>
+<body>
+<div layout:fragment="content" id="page_content" th:data-sessionid="${quizSession.getShortId()}" th:data-key="${quizSession.getHostKey()}">
+    <h1>Welcome <span th:text="${quizSession.getHost()}"></span>, hosting <span th:text="${quiz.getQuizName()}"></span></h1>
+    <p>To join the quiz your teams need the ID
+        <kbd th:text="${quizSession.getShortId()}"></kbd>
+        <button type="button" class="btn btn-light" title="Copy game name to clipboard" th:data-name="${quizSession.getShortId()}" onclick="copyLink($(this).data('name'))">
+            <i class="far fa-clone"></i>
+        </button>
+        <button type="button" class="btn btn-light float-right"
+                th:data-link="@{/ui/quiz/{quizId}/play.html(quizId=${quizSession.getShortId()})}"
+                title="Copy team link to clipboard" onclick="copyLink($(this).data('link'))">
+            <i class="far fa-clone" aria-hidden="true"></i>
+        </button>
+    </p>
+    <p>Live connection status: <div th:replace="components/status.html :: statusIcon"></div></p>
+    <h2>Waiting for teams to join...</h2>
+    <ul id="teamList" class="list-group">
+    </ul>
+    <p>Add link to end/delete session (notify teams)
+        <button type="button" class="btn btn-danger float-right"
+                onclick="endSession()" title="Warning: This will end the session!"><i class="fas fa-times-circle"></i> End Session</button>
+    </p>
+    <p>Link to playing host page (where we can start quiz)
+        <a type="button" class="btn btn-primary float-right"
+                th:href="@{questioning.html(hostKey=${quizSession.getHostKey()})}" title="No further teams will be able to join after the quiz starts!"><i class="fas fa-question"></i> Start Quiz</a>
+    </p>
+    <p>Add a "state" to session, only allow new teams when not "playing"</p>
+</div>
+</body>
+</html>

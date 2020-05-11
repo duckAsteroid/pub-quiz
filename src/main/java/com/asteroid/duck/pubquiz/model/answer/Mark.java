@@ -6,6 +6,9 @@ import lombok.Data;
 
 import java.util.Date;
 
+/**
+ * The mark (or score) given to a single submitted answer
+ */
 @Data
 @Builder
 public class Mark {

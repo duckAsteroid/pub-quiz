@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<body>
+<span>
+    <i th:fragment="statusIcon" id="statusIcon" class="fas fa-unlink text-danger">
+        <script language="JavaScript">
+            function displayStatus(connected) {
+                var statusIndicator = $('#statusIcon')
+                // connect to socket
+                if (connected) {
+                    statusIndicator.attr('class', 'fas fa-link text-success');
+                    statusIndicator.attr('title', 'Connected');
+                }
+                else {
+                    // on disconnect
+                    statusIndicator.attr('class', 'fas fa-unlink text-danger');
+                    statusIndicator.attr('title', 'Error: Disconnected. Refresh this page!')
+                }
+            }
+        </script>
+    </i>
+</span>
+</body>
+</html>

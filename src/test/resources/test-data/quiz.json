@@ -1,0 +1,100 @@
+{
+  "id" : null,
+  "quizName" : "Test Quiz",
+  "rounds" : [ {
+    "title" : "General Knowledge",
+    "questions" : [ {
+      "question" : "How many Ps in Mississippi?",
+      "imageReference" : null,
+      "imageAttribution" : null,
+      "type" : "TEXT",
+      "candidateAnswers" : null,
+      "maxPoints" : 0
+    }, {
+      "question" : "How many Ss in Mississippi?",
+      "imageReference" : null,
+      "imageAttribution" : null,
+      "type" : "MULTIPLE_CHOICE",
+      "candidateAnswers" : [ {
+        "code" : "A",
+        "answer" : "One"
+      }, {
+        "code" : "B",
+        "answer" : "Two"
+      }, {
+        "code" : "C",
+        "answer" : "Three"
+      }, {
+        "code" : "D",
+        "answer" : "Four"
+      } ],
+      "maxPoints" : 0
+    } ]
+  }, {
+    "title" : "Geography",
+    "questions" : [ {
+      "question" : "In which county is Altrincham?",
+      "imageReference" : null,
+      "imageAttribution" : null,
+      "type" : "MULTIPLE_CHOICE",
+      "candidateAnswers" : [ {
+        "code" : "A",
+        "answer" : "Lancashire"
+      }, {
+        "code" : "B",
+        "answer" : "Cheshire"
+      }, {
+        "code" : "C",
+        "answer" : "Yorkshire"
+      }, {
+        "code" : "D",
+        "answer" : "Derbyshire"
+      } ],
+      "maxPoints" : 0
+    }, {
+      "question" : "In which country is the Chrimean Penninsula?",
+      "imageReference" : null,
+      "imageAttribution" : null,
+      "type" : "MULTIPLE_CHOICE",
+      "candidateAnswers" : [ {
+        "code" : "A",
+        "answer" : "Russia"
+      }, {
+        "code" : "B",
+        "answer" : "Ukraine"
+      }, {
+        "code" : "C",
+        "answer" : "Turkey"
+      }, {
+        "code" : "D",
+        "answer" : "Georgia"
+      } ],
+      "maxPoints" : 0
+    } ]
+  } ],
+  "answers" : {
+    "1" : {
+      "1" : [ {
+        "answer" : "2",
+        "points" : 0.0
+      } ],
+      "2" : [ {
+        "answer" : "D",
+        "points" : 0.0
+      } ]
+    },
+    "2" : {
+      "1" : [ {
+        "answer" : "Cheshire",
+        "points" : 0.0
+      } ],
+      "2" : [ {
+        "answer" : "Russia",
+        "points" : 0.0
+      }, {
+        "answer" : "Ukraine",
+        "points" : 0.0
+      } ]
+    }
+  }
+}
