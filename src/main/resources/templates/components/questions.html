@@ -12,10 +12,11 @@
         <div class="sidebar-header">
             <h3 id="quizName">Quiz: <span th:text="${quiz.getQuizName()}">Quiz Name</span></h3>
             <h4 id="hostName">Host: <span th:text="${quizSession.getHost()}">Host Name</span></h4>
-            <p id="quizSessionStatus" th:text="${quizSession.getState()}">Session status</p>
+            <p id="quizSessionStatus" th:text="${quizSession.getState()}" th:class="(${quizSession.getState() == T(com.asteroid.duck.pubquiz.model.QuizSessionState).PLAYING})? 'text-success' : ''">Session status</p>
         </div>
-        <ul id="rounds" style="list-style-type: none;">
+        <ul id="rounds" class="list-group text-muted" style="cursor: pointer">
         </ul>
+        <span th:replace="components/status.html :: statusIcon"></span>
     </nav>
 </div>
 </body>

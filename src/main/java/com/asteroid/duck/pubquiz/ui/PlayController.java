@@ -54,11 +54,15 @@ public class PlayController {
     @GetMapping("{quizId}/play.html")
     public String getQuiz(@PathVariable("quizId") String quizId, Model model) {
         QuizSession quiz = getSession(quizId);
-        model.addAttribute("team", Team.builder().name("").build());
-        model.addAttribute("teams", quiz.getTeams());
-        model.addAttribute("emojis", EMOJIS);
-        return "play/team";
-
+        if(quiz.getState() == QuizSessionState.WAITING_FOR_TEAMS) {
+            model.addAttribute("team", Team.builder().name("").build());
+            model.addAttribute("teams", quiz.getTeams());
+            model.addAttribute("emojis", EMOJIS);
+            return "play/team";
+        }
+        else {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Too late, this session has already started. Sorry!");
+        }
     }
 
     private static List<Long> emojiRange() {
@@ -96,6 +100,13 @@ public class PlayController {
         return rv;
     }
 
+    /**
+     * The answering page for a team
+     * @param sessionId the quiz session (short name) they are playing
+     * @param teamId the team ID (rather than name - to make it hard for other teams to guess)
+     * @param model the MVC model
+     * @return the answer page
+     */
     @GetMapping("{quizId}/teams/{teamId}/answer.html")
     public String teamPage(@PathVariable("quizId") String sessionId, @PathVariable("teamId") String teamId, Model model) {
         QuizSession session = getSession(sessionId);

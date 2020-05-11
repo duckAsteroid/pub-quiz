@@ -14,6 +14,7 @@ import lombok.Data;
 @JsonDeserialize(builder = SessionEvent.SessionEventBuilder.class)
 public class SessionEvent {
     public enum Action {
+        SESSION_STARTED,
         SESSION_ENDED,
         CHANGE_QUESTION
     }

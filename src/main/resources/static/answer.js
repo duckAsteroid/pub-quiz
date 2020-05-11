@@ -11,7 +11,8 @@ $(function () {
         // setup subscriptions
         stompClient.subscribe(`/client/sessions/${sessionId}/teams`, function (envelope) {
             var msg = JSON.parse(envelope.body);
-            // FIXME Respond to session event
+            console.log("Team message: "+msg);
+            // Respond to team events
             if(msg.team.id === teamId) {
                 if (msg.operation === "left") {
                     window.alert("You have been kicked out!");
@@ -25,8 +26,8 @@ $(function () {
 
         stompClient.subscribe(`/client/sessions/${sessionId}`, function (envelope) {
             var msg = JSON.parse(envelope.body);
-            // FIXME Respond to session event
-
+            // Respond to session event
+            console.log("Session message: "+msg);
         }, {}, function () {
             // on disconnect
             displayStatus(false);

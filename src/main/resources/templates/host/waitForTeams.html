@@ -29,9 +29,12 @@
     </ul>
     <p>Add link to end/delete session (notify teams)
         <button type="button" class="btn btn-danger float-right"
-                onclick="endSession()" title="Warning: This will end the session!"><i class="fas fa-times-circle"></i>End Session</button>
+                onclick="endSession()" title="Warning: This will end the session!"><i class="fas fa-times-circle"></i> End Session</button>
     </p>
-    <p>Link to playing host page (where we can start quiz)</p>
+    <p>Link to playing host page (where we can start quiz)
+        <a type="button" class="btn btn-primary float-right"
+                th:href="@{questioning.html(hostKey=${quizSession.getHostKey()})}" title="No further teams will be able to join after the quiz starts!"><i class="fas fa-question"></i> Start Quiz</a>
+    </p>
     <p>Add a "state" to session, only allow new teams when not "playing"</p>
 </div>
 </body>
